@@ -2,6 +2,7 @@ const Categories = require("../../api/v1/categories/model");
 const {BadRequestError, NotFoundError} = require("../../errors");
 
 const getAllCategories = async (req) => {
+  console.log(req.user.organizer);
   const result = await Categories.find({organizer: req.user.organizer});
 
   return result;
