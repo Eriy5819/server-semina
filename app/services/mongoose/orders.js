@@ -25,7 +25,7 @@ const getAllOrders = async (req) => {
   }
 
   const result = await Orders.find(condition)
-    .populate({ path: 'event', match })
+    .populate({ path: 'event', match: { organizer: req.user.organizer } })
     .limit(limit)
     .skip(limit * (page - 1));
 
