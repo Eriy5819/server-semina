@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const orderDetailSchema = new mongoose.Schema({
   ticketCategories: {
     type: String,
-    required: [trus, "Tipe tiket harus diisi"],
+    required: [trus, 'Tipe tiket harus diisi'],
   },
   price: {
     type: Number,
@@ -24,29 +24,29 @@ const orderSchema = new mongoose.Schema(
     personalDetail: {
       firstName: {
         type: String,
-        required: [true, "Please provide firstName"],
+        required: [true, 'Please provide firstName'],
         minlength: 3,
         maxlength: 50,
       },
       lastName: {
         type: String,
-        required: [true, "Please provide lastName"],
+        required: [true, 'Please provide lastName'],
         minlength: 3,
         maxlength: 50,
       },
       email: {
         type: String,
-        required: [true, "Please provide email"],
+        required: [true, 'Please provide email'],
       },
       role: {
         type: String,
-        default: "Designer",
+        default: 'Designer',
       },
     },
     status: {
       type: String,
-      enum: ["pending", "paid"],
-      default: "pending",
+      enum: ['pending', 'paid'],
+      default: 'pending',
     },
     totalPay: {
       type: Number,
@@ -59,67 +59,67 @@ const orderSchema = new mongoose.Schema(
     orderItems: [orderDetailSchema],
     participant: {
       type: mongoose.Types.ObjectId,
-      ref: "Participant",
+      ref: 'Participant',
       required: true,
     },
     payment: {
       type: mongoose.Types.ObjectId,
-      ref: "Payment",
+      ref: 'Payment',
       required: true,
     },
     history: {
       type: mongoose.Types.ObjectId,
-      ref: "History",
+      ref: 'History',
       required: true,
     },
 
     historyEvent: {
       title: {
         type: String,
-        required: [true, "Judul harus diisi"],
+        required: [true, 'Judul harus diisi'],
         minlength: 3,
         maxlength: 50,
       },
       date: {
         type: date,
-        required: [true, "Tanggal dan waktu harus diisi"],
+        required: [true, 'Tanggal dan waktu harus diisi'],
       },
       about: {
         type: String,
       },
       tagline: {
         type: String,
-        required: [true, "Tagline harus diisi"],
+        required: [true, 'Tagline harus diisi'],
       },
       keyPoint: {
         type: [String],
       },
       venueName: {
         type: String,
-        required: [true, "Tempat acara harus diisi"],
+        required: [true, 'Tempat acara harus diisi'],
       },
 
       image: {
         type: mongoose.Types.ObjectId,
-        ref: "Image",
+        ref: 'Image',
         required: true,
       },
       category: {
         type: mongoose.Types.ObjectId,
-        ref: "Category",
+        ref: 'Category',
         required: true,
       },
       talent: {
         type: mongoose.Types.ObjectId,
-        ref: "Talent",
+        ref: 'Talent',
         required: true,
       },
       organizer: {
         type: mongoose.Types.ObjectId,
-        ref: "Organizer",
+        ref: 'Organizer',
         required: true,
       },
     },
   },
-  {timestamps: true}
+  { timestamps: true }
 );
