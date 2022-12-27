@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const orderDetailSchema = new mongoose.Schema({
   ticketCategories: {
     type: String,
-    required: [trus, 'Tipe tiket harus diisi'],
+    required: [true, 'Tipe tiket harus diisi'],
   },
   price: {
     type: Number,
@@ -67,6 +67,11 @@ const orderSchema = new mongoose.Schema(
       ref: 'Payment',
       required: true,
     },
+    event: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Event',
+      required: true,
+    },
     history: {
       type: mongoose.Types.ObjectId,
       ref: 'History',
@@ -81,7 +86,7 @@ const orderSchema = new mongoose.Schema(
         maxlength: 50,
       },
       date: {
-        type: date,
+        type: Date,
         required: [true, 'Tanggal dan waktu harus diisi'],
       },
       about: {
@@ -123,3 +128,5 @@ const orderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+module.exports = mongoose.model('Order', orderSchema);
