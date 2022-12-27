@@ -1,41 +1,41 @@
 // import model Events
-const Events = require("../../api/v1/events/model");
-const {checkingImage} = require("./images");
-const {checkingCategories} = require("./categories");
-const {checkingTalents} = require("./talents");
+const Events = require('../../api/v1/events/model');
+const { checkingImage } = require('./images');
+const { checkingCategories } = require('./categories');
+const { checkingTalents } = require('./talents');
 
 // import custom error NotFound dan BadRequest
-const {NotFoundError, BadRequestError} = require("../../errors");
+const { NotFoundError, BadRequestError } = require('../../errors');
 
 const getAllEvents = async (req) => {
-  const {keyword, category, talent} = req.query;
-  let condition = {organizer: req.user.organizer};
+  const { keyword, category, talent } = req.query;
+  let condition = { organizer: req.user.organizer };
 
   if (keyword) {
-    condition = {...condition, title: {$regex: keyword, $options: "i"}};
+    condition = { ...condition, title: { $regex: keyword, $options: 'i' } };
   }
 
   if (category) {
-    condition = {...condition, category: category};
+    condition = { ...condition, category: category };
   }
 
   if (talent) {
-    condition = {...condition, talent: talent};
+    condition = { ...condition, talent: talent };
   }
 
   const result = await Events.find(condition)
     .populate({
-      path: "image",
-      select: "_id name",
+      path: 'image',
+      select: '_id name',
     })
     .populate({
-      path: "category",
-      select: "_id name",
+      path: 'category',
+      select: '_id name',
     })
     .populate({
-      path: "talent",
-      select: "_id name role image",
-      populate: {path: "image", select: "_id name"},
+      path: 'talent',
+      select: '_id name role image',
+      populate: { path: 'image', select: '_id name' },
     });
 
   return result;
@@ -62,10 +62,10 @@ const createEvents = async (req) => {
   checkingTalents(talent);
 
   // cari Event dengan field name
-  const check = await Events.findOne({title});
+  const check = await Events.findOne({ title });
 
   // apabila check true / data Events sudah ada maka kita tampilkan error bad requst dengan message pembicara duplikat
-  if (check) throw new BadRequestError("judul event duplikat");
+  if (check) throw new BadRequestError('judul event duplikat');
 
   const result = await Events.create({
     title,
@@ -86,21 +86,21 @@ const createEvents = async (req) => {
 };
 
 const getOneEvents = async (req) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   const result = await Events.findOne({
     _id: id,
     organizer: req.user.organizer,
   })
-    .populate({path: "image", select: "_id name"})
+    .populate({ path: 'image', select: '_id name' })
     .populate({
-      path: "category",
-      select: "_id name",
+      path: 'category',
+      select: '_id name',
     })
     .populate({
-      path: "talent",
-      select: "_id name role image",
-      populate: {path: "image", select: "_id name"},
+      path: 'talent',
+      select: '_id name role image',
+      populate: { path: 'image', select: '_id name' },
     });
 
   if (!result) throw new NotFoundError(`Tidak ada acara dengan id : ${id}`);
@@ -109,7 +109,7 @@ const getOneEvents = async (req) => {
 };
 
 const updateEvents = async (req) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   const {
     title,
@@ -131,7 +131,7 @@ const updateEvents = async (req) => {
   await checkingTalents(talent);
 
   // jika id result false /  null maka akan menampilkan error 'Tidak ada pembicara dengan id yang dikirim client
-  const checkEvent = await Events.findOne({_id: id});
+  const checkEvent = await Events.findOne({ _id: id });
 
   if (!checkEvent) throw new NotFoundError(`Tidak ada acara dengan id : ${id}`);
 
@@ -139,14 +139,14 @@ const updateEvents = async (req) => {
   const check = await Events.findOne({
     title,
     organizer: req.user.organizer,
-    _id: {$ne: id},
+    _id: { $ne: id },
   });
 
   // apabila check true / data Events sudah ada maka kita tampilkan error bad request dengan message judul event duplikat
-  if (check) throw new BadRequestError("judul event duplikat");
+  if (check) throw new BadRequestError('judul event duplikat');
 
   const result = await Events.findOneAndUpdate(
-    {_id: id},
+    { _id: id },
     {
       title,
       date,
@@ -161,14 +161,14 @@ const updateEvents = async (req) => {
       talent,
       organizer: req.user.organizer,
     },
-    {new: true, runValidators: true}
+    { new: true, runValidators: true }
   );
 
   return result;
 };
 
 const deleteEvents = async (req) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   const result = await Events.findOne({
     _id: id,
@@ -182,10 +182,31 @@ const deleteEvents = async (req) => {
   return result;
 };
 
+const changeStatusEvents = async (req) => {
+  const { id } = req.params;
+  const { statusEvent } = req.body;
+  // cari event berdasarkan field id
+  const checkEvent = await Event.findOne({
+    _id: id,
+    organizer: req.user.organizer,
+  });
+
+  // jika id result false / null maka akan menampilkan error 'Tidak ada acara dengan id yang dikirimkan client
+  if (checkEvent)
+    throw new NotFoundError(`Tidak ada pembicara dengan id : ${id}`);
+
+  checkEvent.status = statusEvent;
+
+  await checkEvent.save();
+
+  return checkEvent;
+};
+
 module.exports = {
   getAllEvents,
   createEvents,
   getOneEvents,
   updateEvents,
   deleteEvents,
+  changeStatusEvents,
 };
