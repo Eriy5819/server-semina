@@ -3,7 +3,9 @@ const {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
+  UnauthenticatedError,
 } = require('../../errors');
+const { createJWT, createTokenParticipant } = require('../../utils');
 const { otpMail } = require('../mail');
 
 const signupParticipant = async (req) => {
@@ -59,8 +61,49 @@ const activateParticipant = async (req) => {
   );
 
   delete result._doc.password;
+  delete result._doc.otp;
 
   return result;
 };
 
-module.exports = { signupParticipant, activateParticipant };
+const signinParticipant = async (req) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new BadRequestError('Please provide your and password');
+  }
+
+  const result = await Participant.findOne({ email: email });
+
+  if (!result) {
+    throw new UnauthorizedError('Invalid Credentials');
+  }
+
+  if (result.status === 'tidak aktif') {
+    throw new UnauthorizedError('Akun anda belum aktif');
+  }
+
+  const isPasswordCorrect = await result.comparePassword(password);
+
+  if (!isPasswordCorrect) {
+    throw new UnauthorizedError('Invalid Credentials');
+  }
+
+  const token = createJWT({ payload: createTokenParticipant(result) });
+
+  return token;
+};
+
+const getAllEvents = async (req) => {
+  const result = await Events.find({ statusEvent: 'Published' })
+    .populate('category')
+    .populate('image')
+    .select('_id title date tickets venueName');
+};
+
+module.exports = {
+  signupParticipant,
+  activateParticipant,
+  signinParticipant,
+  getAllEvents,
+};
