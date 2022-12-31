@@ -16,7 +16,7 @@ const signupParticipant = async (req) => {
   });
 
   if (result) {
-    result.firstname = firstName;
+    result.firstName = firstName;
     result.lastName = lastName;
     result.role = role;
     result.email = email;
@@ -40,4 +40,27 @@ const signupParticipant = async (req) => {
   return result;
 };
 
-module.exports = { signupParticipant };
+const activateParticipant = async (req) => {
+  const { otp, email } = req.body;
+  const check = await Participant.findOne({
+    email,
+  });
+
+  if (!check) throw new NotFoundError('Partisipan belum terdaftar');
+
+  if (check && check.otp !== otp) throw new BadRequestError('Kode otp salah');
+
+  const result = await Participant.findByIdAndUpdate(
+    check._id,
+    {
+      status: 'aktif',
+    },
+    { new: true }
+  );
+
+  delete result._doc.password;
+
+  return result;
+};
+
+module.exports = { signupParticipant, activateParticipant };

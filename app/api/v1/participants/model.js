@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const participantSchema = new mongoose.Schema(
   {
-    firstname: {
+    firstName: {
       type: String,
       required: [true, 'Nama harus diisi'],
       minlength: 3,
