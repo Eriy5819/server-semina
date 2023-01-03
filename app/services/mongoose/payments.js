@@ -11,7 +11,7 @@ const getAllPayments = async (req) => {
       path: 'image',
       select: '_id name',
     })
-    .populate('id type status image');
+    .populate('_id type status image');
 
   return result;
 };
