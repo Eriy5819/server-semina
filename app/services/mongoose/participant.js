@@ -131,6 +131,7 @@ const checkoutOrder = async (req) => {
   }
 
   const checkingPayment = await Payments.findOne({ _id: payment });
+
   if (!checkingPayment) {
     throw new NotFoundError(
       `Tidak ada metode pembayaran dengan id : ${payment}`
@@ -139,7 +140,6 @@ const checkoutOrder = async (req) => {
 
   let totalPay = 0,
     totalOrderTicket = 0;
-
   await tickets.forEach((tic) => {
     checkingEvent.tickets.forEach((ticket) => {
       if (tic.ticketCategories.type === ticket.type) {

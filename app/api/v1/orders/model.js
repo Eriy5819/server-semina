@@ -2,12 +2,14 @@ const mongoose = require('mongoose');
 
 const orderDetailSchema = new mongoose.Schema({
   ticketCategories: {
-    type: String,
-    required: [true, 'Tipe tiket harus diisi'],
-  },
-  price: {
-    type: Number,
-    default: 0,
+    type: {
+      type: String,
+      required: [true, 'Tipe tiket harus diisi'],
+    },
+    price: {
+      type: Number,
+      default: 0,
+    },
   },
   sumTicket: {
     type: Number,
@@ -70,11 +72,6 @@ const orderSchema = new mongoose.Schema(
     event: {
       type: mongoose.Types.ObjectId,
       ref: 'Event',
-      required: true,
-    },
-    history: {
-      type: mongoose.Types.ObjectId,
-      ref: 'History',
       required: true,
     },
 
