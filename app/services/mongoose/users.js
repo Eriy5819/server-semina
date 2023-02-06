@@ -1,15 +1,15 @@
-const Users = require("../../api/v1/users/model");
-const Organizers = require("../../api/v1/organizers/model");
-const {BadRequestError} = require("../../errors");
+const Users = require('../../api/v1/users/model');
+const Organizers = require('../../api/v1/organizers/model');
+const { BadRequestError } = require('../../errors');
 
 const createOrganizer = async (req) => {
-  const {organizer, role, email, password, confirmPassword, name} = req.body;
+  const { organizer, role, email, password, confirmPassword, name } = req.body;
 
   if (password !== confirmPassword) {
-    throw new BadRequestError("Password dan Konfirmasi password tidak cocok");
+    throw new BadRequestError('Password dan Konfirmasi password tidak cocok');
   }
 
-  const result = await Organizers.create({organizer});
+  const result = await Organizers.create({ organizer });
 
   const users = await Users.create({
     email,
@@ -25,10 +25,10 @@ const createOrganizer = async (req) => {
 };
 
 const createUsers = async (req, res) => {
-  const {name, email, password, role, confirmPassword} = req.body;
+  const { name, email, password, role, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
-    throw new BadRequestError("Password dan Konfirmasi password tidak cocok");
+    throw new BadRequestError('Password dan Konfirmasi password tidak cocok');
   }
 
   const result = await Users.create({
@@ -48,4 +48,4 @@ const getAllUsers = async (req) => {
   return result;
 };
 
-module.exports = {createOrganizer, createUsers, getAllUsers};
+module.exports = { createOrganizer, createUsers, getAllUsers };

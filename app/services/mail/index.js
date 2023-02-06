@@ -29,5 +29,21 @@ const otpMail = async (email, data) => {
     console.log(error);
   }
 };
+const invoiceMail = async (email, data) => {
+  try {
+    let template = fs.readFileSync('app/views/email/invoice.html', 'utf8');
 
-module.exports = { otpMail };
+    let message = {
+      from: gmail,
+      to: email,
+      subject: 'Invoice Mail from Semina ',
+      html: Mustache.render(template, data),
+    };
+
+    return await transporter.sendMail(message);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { otpMail, invoiceMail };

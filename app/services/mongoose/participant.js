@@ -8,7 +8,7 @@ const {
   UnauthorizedError,
 } = require('../../errors');
 const { createJWT, createTokenParticipant } = require('../../utils');
-const { otpMail } = require('../mail');
+const { otpMail, invoiceMail } = require('../mail');
 
 const signupParticipant = async (req) => {
   const { firstName, lastName, email, password, role } = req.body;
@@ -16,7 +16,7 @@ const signupParticipant = async (req) => {
   // jika email dan status tidak aktif
   let result = await Participant.findOne({
     email,
-    status: 'Tidak aktif',
+    status: 'tidak aktif',
   });
 
   if (result) {
@@ -184,6 +184,9 @@ const checkoutOrder = async (req) => {
   });
 
   await result.save();
+
+  await invoiceMail(personalDetail.email, result);
+
   return result;
 };
 

@@ -1,18 +1,21 @@
-const Categories = require("../../api/v1/categories/model");
-const {BadRequestError, NotFoundError} = require("../../errors");
+const Categories = require('../../api/v1/categories/model');
+const { BadRequestError, NotFoundError } = require('../../errors');
 
 const getAllCategories = async (req) => {
   console.log(req.user.organizer);
-  const result = await Categories.find({organizer: req.user.organizer});
+  const result = await Categories.find({ organizer: req.user.organizer });
 
   return result;
 };
 
 const createCategories = async (req) => {
-  const {name} = req.body;
+  const { name } = req.body;
 
-  const check = await Categories.findOne({name, organizer: req.user.organizer});
-  if (check) throw new BadRequestError("kategori nama duplikat");
+  const check = await Categories.findOne({
+    name,
+    organizer: req.user.organizer,
+  });
+  if (check) throw new BadRequestError('kategori nama duplikat');
 
   const result = await Categories.create({
     name,
@@ -23,7 +26,7 @@ const createCategories = async (req) => {
 };
 
 const getOneCategories = async (req) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   const result = await Categories.findOne({
     _id: id,
@@ -36,21 +39,21 @@ const getOneCategories = async (req) => {
 };
 
 const updateCategories = async (req) => {
-  const {id} = req.params;
-  const {name} = req.body;
+  const { id } = req.params;
+  const { name } = req.body;
 
   const check = await Categories.findOne({
     name,
     organizer: req.user.organizer,
-    _id: {$ne: id},
+    _id: { $ne: id },
   });
 
-  if (check) throw new BadRequestError("kategori nama duplikat");
+  if (check) throw new BadRequestError('kategori nama duplikat');
 
   const result = await Categories.findOneAndUpdate(
-    {_id: id},
-    {name},
-    {new: true, runValidators: true}
+    { _id: id },
+    { name },
+    { new: true, runValidators: true }
   );
 
   if (!result) throw new NotFoundError(`Tidak ada kategori dengan id : ${id}`);
@@ -59,7 +62,7 @@ const updateCategories = async (req) => {
 };
 
 const deleteCategories = async (req) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   const result = await Categories.findOne({
     _id: id,
@@ -74,7 +77,7 @@ const deleteCategories = async (req) => {
 };
 
 const checkingCategories = async (id) => {
-  const result = await Categories.findOne({_id: id});
+  const result = await Categories.findOne({ _id: id });
 
   if (!result) throw new NotFoundError(`Tidak ada Kategori dengan id : ${id}`);
 
