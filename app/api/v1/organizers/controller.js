@@ -2,9 +2,12 @@ const {
   createOrganizer,
   createUsers,
   getAllUsers,
-} = require("../../../services/mongoose/users");
+  deleteOrganizer,
+  updateOrganizer,
+  getOneOrganizer,
+} = require('../../../services/mongoose/users');
 
-const {StatusCodes} = require("http-status-codes");
+const { StatusCodes } = require('http-status-codes');
 
 const getCMSUsers = async (req, res, next) => {
   try {
@@ -30,6 +33,42 @@ const createCMSOrganizer = async (req, res, next) => {
   }
 };
 
+const getOneCMSOrganizer = async (req, res, next) => {
+  try {
+    const result = await getOneOrganizer(req);
+
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateCMSOrganizer = async (req, res, next) => {
+  try {
+    const result = await updateOrganizer(req);
+
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const destroyCMSOrganizer = async (req, res, next) => {
+  try {
+    const result = await deleteOrganizer(req);
+
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const createCMSUser = async (req, res, next) => {
   try {
     const result = await createUsers(req);
@@ -46,4 +85,7 @@ module.exports = {
   createCMSOrganizer,
   createCMSUser,
   getCMSUsers,
+  destroyCMSOrganizer,
+  updateCMSOrganizer,
+  getOneCMSOrganizer,
 };
