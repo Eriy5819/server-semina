@@ -6,12 +6,16 @@ const {
   jwtRefreshTokenExpiration,
 } = require('../config');
 
+// token
 const createJWT = ({ payload }) => {
   const token = jwt.sign(payload, jwtSecret, {
     expiresIn: jwtExpiration,
   });
   return token;
 };
+const isTokenValid = ({ token }) => jwt.verify(token, jwtSecret);
+
+// refreshToken
 
 const createRefreshJWT = ({ payload }) => {
   const token = jwt.sign(payload, jwtRefreshTokenSecret, {
@@ -20,7 +24,6 @@ const createRefreshJWT = ({ payload }) => {
   return token;
 };
 
-const isTokenValid = ({ token }) => jwt.verify(token, jwtSecret);
 const isTokenValidRefreshToken = ({ token }) =>
   jwt.verify(token, jwtRefreshTokenSecret);
 
