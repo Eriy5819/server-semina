@@ -109,7 +109,7 @@ const getOneEvents = async (req) => {
   const { id } = req.params;
   const result = await Events.findOne({ _id: id })
     .populate('category')
-    .populate('talent')
+    .populate({ path: 'talent', populate: 'image' })
     .populate('image');
 
   if (!result) throw new NotFoundError(`Tidak ada acara dengan id : ${id}`);
@@ -190,6 +190,14 @@ const checkoutOrder = async (req) => {
   return result;
 };
 
+getAllPaymentByOrganizer = async (req) => {
+  const { organizer } = req.params;
+
+  const result = await Payments.find({ organizer: organizer });
+
+  return result;
+};
+
 module.exports = {
   signupParticipant,
   activateParticipant,
@@ -198,4 +206,5 @@ module.exports = {
   getOneEvents,
   getAllOrders,
   checkoutOrder,
+  getAllPaymentByOrganizer,
 };
